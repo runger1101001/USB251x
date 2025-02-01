@@ -25,17 +25,13 @@ bool USB251X_IO::begin(byte address, TwoWire& wirePort)
   return isConnected();
 }
 
-bool USB251X_IO::isConnected()
-{
-  _i2cPort->beginTransmission(_address);
-  if (_i2cPort->endTransmission() == 0)
-  {
-    _i2cPort->beginTransmission(_address);
-    _i2cPort->write(0x00);
-    _i2cPort->endTransmission(false); //Don't release bus
-    _i2cPort->requestFrom(_address, 2U); //We have to read 2 bytes, the first is throw away number of bytes available, always 32
-    byte incomingBytes = _i2cPort->read();
-    if (incomingBytes == 0x20) //We should always have 32 bytes avaialable
+bool USB251X_IO::isConnected() {
+  byte buff[2] = {0};
+  Wire.beginTransmission(_address);
+  if (Wire.endTransmission() == 0) {
+    readMultipleBytes(REGISTER_DEVICE_ID_LSB, buff, 2);
+    uint16_t deviceID = buff[0]<<8|buff[1];
+    if (deviceID == 0x0BB3)
       return (true);
   }
   return (false);
@@ -108,3 +104,37 @@ bool USB251X_IO::isBitSet(byte registerAddress, byte const bitPosition)
   else
     return false;
 }
+
+String USB251X_IO::readUTF16LEString(byte startRegisterAddress, byte length)
+{
+  if (length > UTF16LESTRING_MAX_LENGTH)
+    length = UTF16LESTRING_MAX_LENGTH;
+  byte buffer[length * 2]; //UTF-16LE is 2 bytes per character
+  readMultipleBytes(startRegisterAddress, buffer, length * 2);
+
+  String result = "";
+  for (byte i = 0; i < length * 2; i += 2)
+  {
+    result += (char)buffer[i];
+  }
+  return (result);
+}
+
+byte USB251X_IO::writeUTF16LEString(byte startRegisterAddress, String str)
+{
+  byte buffer[UTF16LESTRING_MAX_LENGTH * 2]; //UTF-16LE is 2 bytes per character
+  for (byte i = 0; i < UTF16LESTRING_MAX_LENGTH * 2; i++)
+    buffer[i] = 0x00; //Clear buffer
+
+  byte length = str.length();
+  if (length > UTF16LESTRING_MAX_LENGTH)
+    length = UTF16LESTRING_MAX_LENGTH;
+
+  for (byte i = 0; i < length; i++)
+  {
+    buffer[i * 2] = str[i];
+  }
+  writeMultipleBytes(startRegisterAddress, buffer, length * 2);
+  return length;
+}
+

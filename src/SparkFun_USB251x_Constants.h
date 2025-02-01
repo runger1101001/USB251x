@@ -51,6 +51,8 @@ const byte REGISTER_SERIAL_STRING_START = 0x92;
 const byte REGISTER_BATTERY_CHARGING_ENABLE = 0xD0;
 const byte REGISTER_STATUS = 0xFF;
 
+const byte UTF16LESTRING_MAX_LENGTH = 31; // max 31 characters = 62 bytes
+
 const byte DEFAULT_SETTINGS[17] = {
   0x24, //Vendor ID
   0x04,

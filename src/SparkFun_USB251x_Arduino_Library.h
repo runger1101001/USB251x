@@ -39,6 +39,13 @@ class USB251x
     void setProductID(uint16_t productID);
     void setDeviceID(uint16_t deviceID);
 
+    String getManufacturerString();
+    String getProductString();
+    String getSerialNumberString();
+    void setManufacturerString(String manufacturer);
+    void setProductString(String product);
+    void setSerialNumberString(String serial);
+
     //Read/write single bytes
     byte readByte(byte addr);
     void writeByte(byte addr, byte value);

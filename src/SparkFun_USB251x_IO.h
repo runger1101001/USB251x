@@ -50,6 +50,12 @@ public:
   // Writes multiple bytes to register from buffer byte array.
   void writeMultipleBytes(byte registerAddress, const byte* buffer, byte packetLength);
 
+  // Reads a UTF-16LE string starting at the specified register address and of the specified length
+  String readUTF16LEString(byte startRegisterAddress, byte length);
+
+  // Writes a UTF-16LE string starting at the specified register address
+  byte writeUTF16LEString(byte startRegisterAddress, String str);
+
   // Sets a single bit in a specific register. Bit position ranges from 0 (lsb) to 7 (msb).
   void setRegisterBit(byte registerAddress, byte bitPosition);
 

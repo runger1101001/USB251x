@@ -65,3 +65,39 @@ void USB251x::setDeviceID(uint16_t deviceID)
 {
   usb251x_io.writeMultipleBytes(REGISTER_DEVICE_ID_LSB, (byte*)&deviceID, 2);
 }
+
+String USB251x::getManufacturerString()
+{
+  int len = usb251x_io.readSingleByte(REGISTER_MANUFACTURER_STRING_LENGTH);
+  return (usb251x_io.readUTF16LEString(REGISTER_MANUFACTURER_STRING_START, len));
+}
+
+String USB251x::getProductString()
+{
+  int len = usb251x_io.readSingleByte(REGISTER_PRODUCT_STRING_LENGTH);
+  return (usb251x_io.readUTF16LEString(REGISTER_PRODUCT_STRING_START, len));
+}
+
+String USB251x::getSerialNumberString()
+{
+  int len = usb251x_io.readSingleByte(REGISTER_SERIAL_STRING_LENGTH);
+  return (usb251x_io.readUTF16LEString(REGISTER_SERIAL_STRING_START, len));
+}
+
+void USB251x::setManufacturerString(String manufacturer)
+{
+  byte len = usb251x_io.writeUTF16LEString(REGISTER_MANUFACTURER_STRING_START, manufacturer);
+  usb251x_io.writeSingleByte(REGISTER_MANUFACTURER_STRING_LENGTH, len);
+}
+
+void USB251x::setProductString(String product)
+{
+  byte len = usb251x_io.writeUTF16LEString(REGISTER_PRODUCT_STRING_START, product);
+  usb251x_io.writeSingleByte(REGISTER_PRODUCT_STRING_LENGTH, len);
+}
+
+void USB251x::setSerialNumberString(String serial)
+{
+  byte len = usb251x_io.writeUTF16LEString(REGISTER_SERIAL_STRING_START, serial);
+  usb251x_io.writeSingleByte(REGISTER_SERIAL_STRING_LENGTH, len);
+}
