@@ -33,11 +33,13 @@ class USB251x
 
     void setDefaults(); //Write most common settings
     void attach(); //Set USB_ATTACH bit and go!
+    bool isConnected();
 
     //Helper functions for the more common 2-byte registers
     void setVendorID(uint16_t vendorID);
     void setProductID(uint16_t productID);
     void setDeviceID(uint16_t deviceID);
+    uint16_t getDeviceID();
 
     String getManufacturerString();
     String getProductString();

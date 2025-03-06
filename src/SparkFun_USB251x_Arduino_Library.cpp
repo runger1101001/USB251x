@@ -34,6 +34,11 @@ void USB251x::attach(void)
 }
 
 
+bool USB251x::isConnected() {
+  return usb251x_io.isConnected();
+}
+
+
 //Write default settings to hub
 //Upon reset, if device straps to SMBUS, it will sit with 0x00 in every register
 void USB251x::setDefaults()
@@ -65,6 +70,12 @@ void USB251x::setDeviceID(uint16_t deviceID)
 {
   usb251x_io.writeMultipleBytes(REGISTER_DEVICE_ID_LSB, (byte*)&deviceID, 2);
 }
+
+uint16_t USB251x::getDeviceID(){
+  uint8_t buff[2];
+  usb251x_io.readMultipleBytes(REGISTER_DEVICE_ID_LSB, buff, 2);
+  return (buff[0]<<8|buff[1]);
+};
 
 String USB251x::getManufacturerString()
 {
